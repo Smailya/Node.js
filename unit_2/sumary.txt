@@ -1,0 +1,45 @@
+Chapter 2
+Lesson:8 
+A web framework in Node.js is a module that offers structure to your application. Through this structure, you can easily build and customize the way your application.
+Express.js is an open-source framework that speeds development and has a stable structure, a framework helps you to avoid building an app from scratch.  Express.js operates through functions considered to be middleware because they sit between HTTP interaction on the web and the Node.js platform. Express.js is an external package, it doesn’t come preinstalled with Node.js. You need to download and install, and run this code to install it. npm install express --save.
+Use the --save flag so that Express.js is listed as an application dependency.
+You require Express.js by referring to the module name express and storing it as a constant in your main.js. The express webserver application is instantiated and stored in a constant to be referred to as app, you’ll use app to access most of Express.js’ resources. Express.js offers a way to define a GET route and its callback function without building out an extra module. If a request is made to the home page, Express.js catches it and allows you to respond. Put this code in your main.js
+const port = 3000, express = require("express"), app = express(); app.get("/", (req, res) => { res.send("Hello, Universe!"); }) .listen(port, () => { console.log(`The Express.js server has started and is listening ➥ on port number: ${port}`); });
+You can use the nodemon package to run your application, use this code:
+npm i nodemon -- save-dev or npm i nodemon -D. After installing you can type npm start to run your app. Express.js has  simpler ways to pull and log data from the request body, add this code to your main.js
+
+Lesson:9
+The use method allows you to define the middleware functions you want to use with Express.js. Add this code in your main.
+const port = 3000, express = require("express"), app = express(); app.get("/items/:vegetable", (req, res) => { let veg = req.params.vegetable; res.send(`This is the page for ${veg}`); }); app.listen(port, () => { console.log(`Server running on port: ${port}`); });
+You have two main ways to get data from the user:  Through the request body in a POST request  Through the request’s query string in the URL
+MVC allows you to custom modules and code to read, edit, and respond with data within the request-response cycle, it has 3 parts models, views, and controllers
+
+Lesson:10
+A templating engine is what Express.js uses to process your views and convert them to browser-readable HTML pages.
+Use this cod to install ejs npm install ejs --save  you can also install both of them at the same time by typing npm install express ejs --save.
+pass data from your controllers to your views instead of defining those variables directly in the view. To do so, remove the line in index.ejs that defines and assigns the name variable, but keep the H1 tag and its EJS contents.
+ A layout is a shell in which your views are rendered, there is also a layout package that you can use by typing: npm express-ejs-layouts
+
+Lesson:10 - 12
+locate the scripts property; you should see a placeholder for a test script. Add a comma to the end of that test script, and add "start": "node main.js". This script allows you to run npm start to start your application and abstracts the need to know the name of your main application file
+"scripts": { "test": "echo \"Error: no test specified\" && exit 1",
+ "start": "node main.js" },
+The scripts object allows you to define aliases for commands that you want to run with npm.
+npm install express ejs express-ejs-layouts http-status-codes --save
+
+
+
+
+
+
+
+
+
+
+echo "# Node.js" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/Smailya/Node.js.git
+git push -u origin main
