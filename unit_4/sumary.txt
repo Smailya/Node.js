@@ -1,0 +1,50 @@
+Lesson:17
+Adding validations to your models  
+Mongoose provides a set of data types that you can specify in your schema; these data types are appropriately called SchemaTypes. Which are: string, date, arrays, mixed,objectId.
+Validators are rules that you apply to model properties, preventing them from saving to your database unless those rules are met, refer to Listing 17.2
+Creating static and instance methods for your models
+refer to Listing 17.3
+There are also other queries you could use such as find, finOne, findById, remove
+Testing your models in REPL 
+refer to Listing 17.4 before testing the model in REPL you navigate to your root cmd then install mongoose then make the connection with mongod, then you open another terminal you type node then run the code in listing 17.4 then try adding an existing email from your cmd editor in listing 17.5 
+Until you build views to interact with your database, REPL is a great tool to run CRUD operations on your models. But you need to require the modules with which you’d like to test so that your REPL environment will know which database to save to and which Subscriber model you’re creating
+Implementing data associations on multiple models
+The data relationship we have are: 1:1, 1:m, m:m.
+If you want to use the one to one relationship when you create a property simply remove the bracket, that would change the relationship from 1:m to 1:1.
+Eg: with bracket the subscriber could register for many courses 
+ [{type: mongoose.Schema.Types.ObjectId, ref: "Course"}]  without bracket he can only register for one course:  course: {type: mongoose.Schema.Types.ObjectId, ref: "Course"}  
+The populate method is useful for collecting all associated data for a record
+(to do the m:m rely on JavaScript assignment operators. Suppose that you have a subscriber assigned to the variable subscriber1 and a course instance represented as course1. To associate these two instances, assuming the subscriber model can have many course associations, you need to run subscriber1.courses.push(course1). Because subscriber1.courses is an array, use the push method to add the new course. Alternatively, you can push the ObjectId into subscriber.courses instead of using the whole course object. If course1 has ObjectID "5c23mdsnn3k43k2kuu", for example, your code would look like the following: subscriber1.courses.push("5c23mdsnn3k43k2kuu").)
+
+
+
+Lesson:18
+Creating model associations with a user model 
+Refer to Listing 18.1 
+Using virtual attributes 
+Virtual attributes aren’t saved in the database. These attributes, unlike normal schema attributes, exist only while the application is running; they can’t be extracted from the database or found directly through MongoDB. 
+Type the code in your cmd Refer to Listing 18.2  & 18.3 in book.
+Implementing a CRUD structure on the user model 
+database operations are four: create, read, update, and delete (CRUD)
+Building an index page to view all users in your database
+Refer to Listing 18.8 &  18.9
+
+
+
+
+Lesson 19
+Constructing a model creation form
+REFER TO Listing 19.1 FOR CRATING THE FORM
+Saving users to your database from the browser
+Refer to Listing 19.4
+Displaying associated models in a view
+Refer to Listing 19.5 & Listing 19.7
+Lesson 20
+Constructing a model edit form
+Refer to Listing 20.1  & Listing 20.5
+Updating user records in your database
+Listing 20.6
+Deleting user records
+Listing 20.8 & Listing 20.9
+On Listing 20.10 Adding links for user CRUD actions to show.ejs
+
