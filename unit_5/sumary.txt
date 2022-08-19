@@ -1,0 +1,36 @@
+Unit authentication user account
+Lesson 22
+Setting up sessions and cookies
+Sessions contain data about the most recent interaction between a user and the application, such as the currently logged-in user, length of time before a page times out, or messages intended to be displayed once.
+Use the connect-flash package to create your flash messages. to connect-flash middleware module type npm i connect-flash -S in the terminal then install two more packages by running npm i cookie-parser express-session -S .
+express-session allows you to store your messages in a few ways on the user’s browser. Cookies are one form of session storage, so you need the cookie-parser package to indicate that you want to use cookies and that you want your sessions to be able to parse (or decode) cookie data sent back to the server from the browser.
+Express.js application uses cookie-parser as middleware and to use some secret passcode you choose. cookie-parser uses this code to encrypt your data in cookies sent to the browser. Express-session uses cookie-parser as its storage method and to expire cookies after about an hour.
+
+  Creating flash messages in your controller actions
+Flash messages are semipermanent data used to display information to users of an application. These messages originate in your application server and travel to your users browsers as part of a session.To get flash messages working, you need to attach them to the request made before you render a view to the user. Generally, when a user loads the home page—you don’t need to send a flash message.Flash messages are useful when you want to notify the user of a successful or failed request, Refer to listing  22.4 
+Setting up validation middleware on incoming data
+ you need to set up another middleware configuration for express to treat your connect flash messages like a local variable on the response. When you add the middleware function, you’re telling Express to pass a local object called flash messages to the view. The value of that object is equal to the flash messages you create with the connect-flash module. In this process, you’re transferring the messages from the request object to the response.Refer to listing 22.2
+Visit http://localhost:3000/users/new to check your application
+Lesson 23
+Creating a user log-in form
+Refer to Listing 23.1
+Hashing data in your database with bcrypt
+Encryption is the process of combining some unique key or passphrase with sensitive data to produce a value that represents the original data.
+hashing data is the original value of which can be retrieved with a private key used for the hashing function. This hashed value is stored in the database instead of the sensitive data. When you want to encrypt new data, pass that data through the encryption algorithm.
+bcrypt is a sophisticated hashing function that allows you to combine certain unique keys in your application to store data such as passwords in your database. install the bcrypt package by typing npm i bcrypt@5.0.0 -S in a new terminal
+The Mongoose pre and post hooks are great ways to run some code on the User instance before and after the user is saved to the database.
+The bcrypt.hash method takes a password and a number. The number represents the level of complexity against which you’d like to hash your password, and 10 is generally accepted as a reliable number. When the hashing of the password is complete, the next part of the promise chain accepts the resulting hash (your hashed password).
+Adding validation middleware with express-validator
+  --Firstly install this package by typing npm i express-validator -S
+ --then require it with const expressValidator =
+   require("express-validator") in main.js, and tell your Express.js app to use it by adding
+   router.use(expressValidator()).
+ --you need to create a validate action between the path and create action in the POST route to /users/create in main.js
+Quick check
+What’s the difference between a sanitizer and a validator? A sanitizer cleans data by trimming whitespace, changing the case, or removing unwanted characters. A validator tests data quality to ensure that the way it was entered meets your database requirements. 
+True or false: bcrypt’s compare method compares the plain-text password in your database with the plain-text value from the user’s input?
+False. The only password value in the database is a hashed password, so there’s no plain-text value to compare against. The comparison works by hashing the user’s new input and comparing the newly created hashed value with the stored hash value in the database. This way, the application still won’t know your actual password, but if two hashed passwords match, you can safely say that your input matched the original password you set up. 
+Why does the placement of the /users/login route matter in main.js? Because you have routes that handle parameters in the URL, if those routes (such as /users/:id) come first, Express.js will treat a request to /users/login as a request to the user’s show page, where login is the :id. Order matters: if the /users/login route comes first, Express.js will match that route before checking the routes that handle parameters. 
+
+
+
