@@ -1,0 +1,94 @@
+What does an API do
+An API is like a messenger that takes a request then tells the system what to do then delivers the response back to you, API can access data so that multiple apps can work together(connects apps together) or hide complexity, extend functionality, and security, API are interface for your code.
+
+Lesson 26
+Organizing your routes with namespacing
+Namespacing is a way of defining routes, paths, and other application items under the Namespacing umbrella of a specific string or path. Instead of defining dozens of routes with the same path prefix, /users, you can make that prefix a namespace for those routes. Namespacing is helpful in separating routes in your API based on the format of the content returned. 
+Refer to Listing 26.1 where  user routes are being moved to userRoutes.js
+Refer to listing 26.2 where all routes are imported  into index.js
+
+
+Creating API endpoints to respond with JSON
+An API is a structure set up within your application to allow external sources to access your application data. 
+you’ve already built an API by creating your Express.js web server, By serving HTML and EJS, you’ve provided an avenue through which users of your application can access your data:
+In this section, you reconstruct some of your application routes and actions to respond with data in JSON format in addition to rendered EJS views.
+Responding with JSON is simple in Express.js. Change the res.render("courses/index") line in the indexView action
+of coursesController.js to res.json(res.locals.courses). When you restart your application and visit http:// locatlhost:3000/courses, your browser should display all the courses in your database in JSON format (figure 26.1).
+Also, refer to Listing 26.3 on how an if statement is used to respond with js or ejs
+you could benefit from application routes that return JSON data. Primarily, you could benefit by making Ajax requests from the client to access data from pages you don’t want to refresh
+
+Making Ajax requests from your views
+Asynchronous JavaScript and XML (Ajax) is a technology that allows client-side requests to be made asynchronously without interfering with any behavior or display of the application page. Ajax uses JSON and XML to format data and requests to be sent to a server. By managing only the data layer of an application on your browser, Ajax allows you to make a request asynchronously and handle data in the resulting response through a callback function.
+Refer to Listing 26.6 for  Ajax function to load data in modal in recipeApp.js
+
+Quick check 26.2 What method do you use on the response to send data as JSON back to the client? In Express.js, you can use res.json followed by the parameters you’d like to send in JSON format.
+Why do you add app.use("/", router) in main.js? When the router is defined in main.js, you need to tell the Express.js application to use it as middleware.
+What do you expect will happen if there are no courses in the database when you make an Ajax request? The Ajax request returns an array of items from the database. If there are no records, the response contains an empty array
+
+Lesson 27
+Creating an API namespace
+to implement a namespace for API endpoints that return JSON data or perform actions asynchronously, create a new route module called apiRoutes.js in your routes folder, Require this new module in index.js by adding const apiRoutes  = require("./apiRoutes"). Then tell your router to use this module under the api namespace with router.use("/api", apiRoutes).
+Refer to Listing 27.1 & Listing 27.2 & Listing 27.3
+
+Building a UI modal to fetch data asynchronously
+you improve the modal even more by allowing users to join a course asynchronously through the modal  Add a button that allows users to join the course. Through AJAX, you submit a request to an API endpoint where a controller action attempts to add the user to the course and responds with a success or failure message in JSON.
+Refer to Listing 27.4 for adding a button & Listing 27.5 to Add an event listener to each button in recipeApp.js
+
+Connecting models with MongoDB methods
+
+you need to create a route to handle requests made for the current user to join a course. To do so, add router.get("/courses/:id/join", courses- Controller.join, coursesController.respondJSON) to apiRoutes.js. This route allows get requests to go through a join action and feed results to your respondJSON action, which returns to the client. At the top of coursesController.js, require the User model with
+const User = require("../models/user"). Then, in coursesController.js, add the join
+action in listing 27.6. In this join action, you get the current logged-in user and the course’s ID from the URL params. If a currentUser exists, use the Mongoose findByIdAndUpdate to locate the user object and update its courses array to contain the target course ID. Here, you use the MongoDB $addToSet method, which ensures that the array has no duplicate IDs. If you’re successful, add a success property to the response’s locals object, which in turn is passed to respondJSON and passed back to the client. In case the user isn’t logged in or an error occurs while updating the user’s association, pass an error to be handled by your error-handling middleware.
+Refer to Listing 27.6 & Listing 27.7 % Listing 27.8
+
+Quick check:Why do you create a new folder for API controllers?
+Having a separate folder for API controllers and actions makes it easier to split
+the application in two. One part of the application serves data with a visual aspect, and the other serves
+data to sources looking for the raw data.
+Why do you need to call the addJoinButtonListener function after the modal contents are created? addJoinButtonListener sets an event listener for a specific class within the modal contents. To set the listener, you must first create the content in the modal.
+Why do you need to use the findByIdAndUpdate method?
+The findByIdAndUpdate Mongoose method combines the find and update
+methods, so you can conveniently perform a single step to update a user document
+
+Lesson 28
+Adding security-token-verification middleware
+generating an API token that must be used by users accessing your API. Users need to have a token because they may not be using a browser to access the API, so your current implementation with Passport.js, cookies, and sessions may not work with the client. An additional token reduces this risk, ensuring that only users who make requests with a valid token can see data. You could add
+app.set("token", process.env.TOKEN || "recipeT0k3n") to main.js this application variable would be set to whatever you use as the TOKEN environment variable or default to recipeT0k3n. The token could be retrieved by using app.get("token").
+Because you want to monitor incoming requests to the API in the apiRoutes module, set the token as a constant in usersController.js in the api folder, using const token = process.env.TOKEN || "recipeT0k3n". This token will be used by middleware within
+usersController.js to verify incoming API requests. Create that middleware function
+by adding the code in listing 28.1 to usersController.js. This middleware function, verifyToken, checks for a query param called apiToken that matches the token you set earlier. If the tokens match, call next to continue the middleware chain; otherwise, pass an error with a custom message. This error reaches your error-handling middleware and displays the message as JSON
+Refer to Listing 28.1
+
+
+
+
+
+Creating a pre("save") hook to generate API keys
+add a custom token to each user account. Do this by adding a new apiToken field to the user schema that’s of type String. Next, build a pre("save") hook on the User model to generate an API token that’s unique to that user upon account creation. Before you get to the code, use a Node.js package to help with the token generation.
+The rand-token package provides some simple tools for creating new alphanumeric
+tokens of your desired length. Run npm install rand-token -S to install the rand-token package in this project, and require it in user.js by adding const randToken = require ("rand-token").
+Refer to Listing 28.2
+Implementing JWT header authentication
+Jwt stands for Json web token. are signed or encrypted data passed between the server and client as a means of representing an authenticated user request.You can think, of JWTs as being like API tokens that are regenerated on every login. JWTs contain three parts:
+Header= JSON object detailing how the data in the JWT is prepared and hashed.
+Payload = The data stored in the JWT, used to verify the user who previously authenticated. The payload normally includes the user’s ID.
+Signature = A hashed code using the header and payload values.
+These three values together offer a unique arrangement of data indicating the recent login status for a specific user, when the user makes a request and passes their email and password. The server responds with an encoded JWT verifying the user’s correct login information. For each subsequent user request, that same JWT must be sent back to the server. Then the server verifies the JWT by decoding its values and locating the user specified in the payload, JWTs aren’t encrypted through hashing and salting. JWTs are encoded, which means that the server can decode the JWT to reveal its contents without needing to know some secret value set by the user.
+you apply JWT API security with the help of the jsonwebtoken package. Install the 
+jsonwebtoken package by running npm i jsonwebtoken -S in terminal. Because you’re going to use JWTs for user verification in the API, require jsonwebtoken in users- Controller.js with const jsonWebToken = require("jsonwebtoken").
+To use JWTs, you need to allow the user to log in without a browser. Create a new API login action, refers to Listing 28.4
+
+You can generate the token without a browser by making a POST request to the /api/login route with your email and password in the body. To do so, run a curl command in terminal, such as curl -d"email=jon@jonwexler.com&password=12345" http://localhost:3000/api/login. In this example, the -d flag indicates that the user is posting their email and password as data to the provided URL. After running this command, you should expect a response similar to the response in Listing 28.5
+
+
+
+
+
+
+
+
+Quick check
+Why might you store a secret token in process.env.TOKEN? You can store sensitive or secret data in process.env as environmental variables. These variables are normally stored on the server but don’t need to appear in the code. This practice makes it easier to change the token directly on the server (you don’t have to change the code each time), and it’s a more-secure convention.
+What doers andToken.generate(16) do?This method generates a random 16-character alphanumeric token.
+Why do you pass the JWT in the header of the request? You could pass the JWT in the body of the request, but because not all requests
+will be POST, the headers offer a more convenient place.
